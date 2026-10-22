@@ -7,7 +7,12 @@ Live status of the [Vlana](https://github.com/getvlana/vlana) network: **[getvla
 Every 15 minutes a GitHub Action asks the network how it's doing and commits the answer here. The history isn't kept by us: it lives in this repo's git log, one commit per sample, and anyone can audit it.
 
 <!-- status -->
-_first sample pending_
+**🟢 all nodes up** · 2 countries · 0 SOL paid to operators · checked 2026-10-22 18:42 UTC
+
+| node | country | line | now | latency | 24h | 7d |
+|---|---|---|---|---|---|---|
+| `fi-01` | FI | datacenter | 🟢 | 182 ms | 100% | 100% |
+| `us-02` | US | datacenter | 🟢 | 725 ms | 100% | 100% |
 <!-- /status -->
 
 ## What's in here

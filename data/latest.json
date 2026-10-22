@@ -1,0 +1,31 @@
+{
+ "at": 1792694520000,
+ "api": true,
+ "error": null,
+ "online": 2,
+ "total": 2,
+ "countries": 2,
+ "paid": 0,
+ "round": 90,
+ "onchain": null,
+ "nodes": [
+  {
+   "name": "fi-01",
+   "country": "FI",
+   "home": false,
+   "online": true,
+   "latency": 182,
+   "up24": 1,
+   "up7": 1
+  },
+  {
+   "name": "us-02",
+   "country": "US",
+   "home": false,
+   "online": true,
+   "latency": 725,
+   "up24": 1,
+   "up7": 1
+  }
+ ]
+}
