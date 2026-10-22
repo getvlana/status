@@ -1,12 +1,12 @@
 {
- "at": 1792694520000,
+ "at": 1792713360000,
  "api": true,
  "error": null,
  "online": 2,
  "total": 2,
  "countries": 2,
  "paid": 0,
- "round": 90,
+ "round": 95,
  "onchain": null,
  "nodes": [
   {
@@ -14,7 +14,7 @@
    "country": "FI",
    "home": false,
    "online": true,
-   "latency": 182,
+   "latency": 180,
    "up24": 1,
    "up7": 1
   },
@@ -23,7 +23,7 @@
    "country": "US",
    "home": false,
    "online": true,
-   "latency": 725,
+   "latency": 713,
    "up24": 1,
    "up7": 1
   }
