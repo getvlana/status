@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vlana status</title>
+<meta name="description" content="Live status of the Vlana VPN network, sampled every 15 minutes from GitHub Actions.">
+<meta property="og:title" content="Vlana status">
+<meta property="og:description" content="Every node, every 15 minutes, 30 days of history.">
+<meta property="og:image" content="og.jpg">
+<link rel="icon" href="favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#121212;--panel:#161616;--line:#262626;--line2:#333331;--ink:#edede8;--dim:#8a8a85;--mute:#5a5a56;--a:#cfff3a;--bad:#ff5a4e;--warn:#e8b23a;--pad:24px}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.5 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'Geist Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.01em}
+.dim{color:var(--dim)}.mute{color:var(--mute)}.lime{color:var(--a)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px}
+header{display:flex;align-items:center;gap:12px;height:76px}
+header img{width:28px;height:28px}
+header b{font-weight:500;font-size:18px}
+header .sp{flex:1}
+header a.mono:hover{color:var(--ink)}
+.frame{border:1px solid var(--line);border-top:0}
+.cell{padding:var(--pad);border-top:1px solid var(--line)}
+.hero{display:grid;grid-template-columns:1fr 1fr}
+.hero .cell+.cell{border-left:1px solid var(--line)}
+h1{font:300 clamp(48px,9vw,112px)/.95 Geist,sans-serif;letter-spacing:-.045em;margin-top:56px}
+.state{display:flex;align-items:center;gap:12px;font-size:22px;margin-top:auto}
+.hero .cell{display:flex;flex-direction:column;min-height:240px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--a);box-shadow:0 0 0 4px rgba(207,255,58,.12)}
+.dot.warn{background:var(--warn);box-shadow:0 0 0 4px rgba(232,178,58,.12)}.dot.bad{background:var(--bad);box-shadow:0 0 0 4px rgba(255,90,78,.12)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr)}
+.stats .cell+.cell{border-left:1px solid var(--line)}
+.v{font:400 34px/1.1 Geist,sans-serif;letter-spacing:-.02em;margin-top:8px}
+.sec{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+h2{font:300 44px/1 Geist,sans-serif;letter-spacing:-.03em}
+.node{display:grid;grid-template-columns:200px 1fr 150px;gap:24px;align-items:center}
+.node b{font-weight:500;display:block}
+.bars{display:flex;gap:1px;height:34px;align-items:stretch}
+.bars i{flex:1;background:var(--a);border-radius:1px;opacity:.9}
+.bars i.part{background:var(--warn)}.bars i.down{background:var(--bad)}.bars i.none{background:var(--line2);opacity:.6}
+.bars i:hover{opacity:1;outline:1px solid var(--ink)}
+.axis{display:flex;justify-content:space-between;margin-top:6px}
+.r{text-align:right}
+.spark{width:100%;height:120px;display:block}
+.tip{position:fixed;pointer-events:none;background:var(--panel);border:1px solid var(--a);border-radius:4px;padding:8px 10px;display:none;z-index:9}
+footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:24px 0 40px}
+footer a:hover{color:var(--ink)}
+@media (max-width:900px){
+  .hero,.stats{grid-template-columns:1fr 1fr}.hero .cell{min-height:180px}
+  .node{grid-template-columns:1fr auto}.node .bars-cell{grid-column:1/-1;order:3}
+  h2{font-size:34px}
+}
+@media (max-width:560px){.hero{grid-template-columns:1fr}.hero .cell+.cell{border-left:0}.stats .cell:nth-child(3){border-left:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="logo.webp" alt=""><b>Vlana</b><span class="mono dim">status</span>
+    <span class="sp"></span>
+    <a class="mono dim" href="https://go.vlana.app">app ↗</a>
+    <a class="mono dim" href="https://github.com/getvlana/status">source ↗</a>
+  </header>
+  <div class="frame">
+    <div class="hero">
+      <div class="cell"><span class="mono dim">sampled every 15 min by GitHub Actions</span><h1>status/</h1></div>
+      <div class="cell"><p class="dim">Not our own dashboard: a scheduled job on GitHub asks the network how it's doing and commits the answer to this repo. 30 days of history, every sample public.</p><div class="state"><span class="dot" id="dot"></span><span id="state">loading…</span></div></div>
+    </div>
+    <div class="stats">
+      <div class="cell"><div class="mono dim">nodes online</div><div class="v lime" id="s-on">—</div></div>
+      <div class="cell"><div class="mono dim">countries</div><div class="v" id="s-cc">—</div></div>
+      <div class="cell"><div class="mono dim">paid to operators</div><div class="v" id="s-paid">—</div></div>
+      <div class="cell"><div class="mono dim">last round on-chain</div><div class="v" id="s-round">—</div></div>
+    </div>
+    <div class="cell sec"><h2>nodes/</h2><span class="mono dim">last 7 days · one bar per hour</span></div>
+    <div id="nodes"></div>
+    <div class="cell sec"><h2>network/</h2><span class="mono dim">nodes online · last 30 days</span></div>
+    <div class="cell"><svg class="spark" id="spark" preserveAspectRatio="none"></svg><div class="axis mono mute"><span>30 days ago</span><span id="max"></span><span>now</span></div></div>
+  </div>
+  <footer class="mono dim"><span id="at">—</span><span><a href="data/history.json">history.json</a> · <a href="data/latest.json">latest.json</a> · <a href="https://github.com/getvlana/vlana">getvlana/vlana</a></span></footer>
+</div>
+<div class="tip mono" id="tip"></div>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pct = v => v == null ? '—' : (v * 100).toFixed(v === 1 ? 0 : 1) + '%';
+const region = (() => { try { const d = new Intl.DisplayNames(['en'], { type: 'region' }); return c => { try { return d.of(c); } catch { return c; } }; } catch { return c => c; } })();
+const H = 3600e3;
+async function load() {
+  const bust = '?t=' + Math.floor(Date.now() / 60e3);
+  const [L, Hs] = await Promise.all([fetch('data/latest.json' + bust).then(r => r.json()), fetch('data/history.json' + bust).then(r => r.json())]);
+  const allUp = L.api && L.online === L.total && L.total > 0;
+  $('#dot').className = 'dot' + (!L.api ? ' bad' : allUp ? '' : ' warn');
+  $('#state').textContent = !L.api ? 'API unreachable' : allUp ? 'All nodes up' : `${L.online} of ${L.total} nodes up`;
+  $('#s-on').textContent = `${L.online}/${L.total}`;
+  $('#s-cc').textContent = L.countries;
+  $('#s-paid').textContent = L.paid == null ? '—' : (+L.paid).toLocaleString('en', { maximumFractionDigits: 3 }) + ' SOL';
+  $('#s-round').innerHTML = L.onchain ? `<a class="lime" href="https://go.vlana.app/#/round/${L.onchain}">#${L.onchain} ✓</a>` : '<span class="dim">—</span>';
+  $('#at').textContent = 'last sample ' + new Date(L.at).toLocaleString('en', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+
+  const end = Math.floor(Date.now() / H) * H + H;
+  $('#nodes').innerHTML = L.nodes.length ? L.nodes.map(n => {
+    const s = Hs.nodes[n.name]?.samples || [];
+    const bars = [];
+    for (let i = 167; i >= 0; i--) {
+      const a = end - (i + 1) * H, b = end - i * H, in_ = s.filter(x => x[0] >= a && x[0] < b);
+      const u = in_.length ? in_.reduce((t, x) => t + x[1], 0) / in_.length : null;
+      bars.push(`<i class="${u == null ? 'none' : u === 1 ? '' : u === 0 ? 'down' : 'part'}" data-t="${a}" data-u="${u ?? ''}"></i>`);
+    }
+    return `<div class="cell node">
+      <div><b>${esc(n.name)}</b><span class="mono dim">${esc(region(n.country))} · ${n.home ? 'home' : 'datacenter'}</span></div>
+      <div class="bars-cell"><div class="bars">${bars.join('')}</div><div class="axis mono mute"><span>7 days ago</span><span>now</span></div></div>
+      <div class="r mono"><div class="${n.online ? 'lime' : ''}">${n.online ? 'online' : 'offline'}${n.latency ? ' · ' + n.latency + 'ms' : ''}</div><div class="dim">${pct(n.up7)} 7d</div></div>
+    </div>`;
+  }).join('') : '<div class="cell dim">No nodes yet.</div>';
+
+  // nodes online over 30 days
+  const pts = Hs.network.filter(x => x[1]);
+  const svg = $('#spark'), W = 1000, Hh = 120, t0 = Date.now() - 30 * 86400e3;
+  const max = Math.max(1, ...pts.map(x => x[2]));
+  const xy = pts.map(x => [((x[0] - t0) / (30 * 86400e3)) * W, Hh - 8 - (x[2] / max) * (Hh - 24)]);
+  svg.setAttribute('viewBox', `0 0 ${W} ${Hh}`);
+  if (xy.length === 1) xy.unshift([Math.max(0, xy[0][0] - 6), xy[0][1]]); // one sample: draw a stub, not nothing
+  svg.innerHTML = xy.length ? `<path d="M${xy.map(p => p.join(',')).join('L')}L${xy.at(-1)[0]},${Hh}L${xy[0][0]},${Hh}Z" fill="rgba(207,255,58,.08)"/><path d="M${xy.map(p => p.join(',')).join('L')}" fill="none" stroke="#cfff3a" stroke-width="2" vector-effect="non-scaling-stroke"/>` : '';
+  $('#max').textContent = pts.length ? `peak ${max} nodes` : 'no samples yet';
+}
+const tip = $('#tip');
+document.addEventListener('mouseover', e => {
+  const i = e.target.closest('.bars i');
+  if (!i) { tip.style.display = 'none'; return; }
+  const u = i.dataset.u;
+  tip.innerHTML = `${new Date(+i.dataset.t).toLocaleString('en', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })}<br>${u === '' ? '<span class="dim">no data</span>' : `<span class="${+u === 1 ? 'lime' : ''}">${pct(+u)} up</span>`}`;
+  tip.style.display = 'block';
+});
+document.addEventListener('mousemove', e => { tip.style.left = Math.min(innerWidth - 160, e.clientX + 12) + 'px'; tip.style.top = e.clientY + 14 + 'px'; });
+load().catch(e => { $('#state').textContent = 'could not load data'; console.error(e); });
+setInterval(() => load().catch(() => { }), 5 * 60e3);
+</script>
+</body>
+</html>

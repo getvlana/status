@@ -1,0 +1,30 @@
+name: collect
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: collect
+
+jobs:
+  sample:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: run
+        run: node collect.mjs
+      - name: commit
+        run: |
+          git config user.name 'vlana-status'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data README.md
+          git diff --cached --quiet || git commit -qm "${{ steps.run.outputs.summary }}"
+          git push -q
