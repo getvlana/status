@@ -1,20 +1,20 @@
 {
- "at": 1792713360000,
- "api": true,
- "error": null,
- "online": 2,
+ "at": 1792715820000,
+ "api": false,
+ "error": "fetch failed",
+ "online": 0,
  "total": 2,
- "countries": 2,
- "paid": 0,
- "round": 95,
+ "countries": 0,
+ "paid": null,
+ "round": null,
  "onchain": null,
  "nodes": [
   {
    "name": "fi-01",
    "country": "FI",
    "home": false,
-   "online": true,
-   "latency": 180,
+   "online": false,
+   "latency": null,
    "up24": 1,
    "up7": 1
   },
@@ -22,8 +22,8 @@
    "name": "us-02",
    "country": "US",
    "home": false,
-   "online": true,
-   "latency": 713,
+   "online": false,
+   "latency": null,
    "up24": 1,
    "up7": 1
   }
