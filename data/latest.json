@@ -1,5 +1,5 @@
 {
- "at": 1793316480000,
+ "at": 1793318700000,
  "api": false,
  "error": "fetch failed",
  "online": 0,
@@ -16,7 +16,7 @@
    "online": false,
    "latency": null,
    "up24": null,
-   "up7": 1
+   "up7": null
   },
   {
    "name": "us-02",
@@ -25,7 +25,7 @@
    "online": false,
    "latency": null,
    "up24": null,
-   "up7": 1
+   "up7": null
   }
  ]
 }
